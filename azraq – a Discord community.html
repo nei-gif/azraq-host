@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>azraq – a Discord community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f2f4ff; --panel:#e4e9ff; --ink:#0c1230; --mute:#4a5380; --line:#c8d0f5;
+  --blue:#2f55f0; --blue-ink:#ffffff; --glow:#7a5cff; --pop:#ff7ab8;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#070a1c; --panel:#0e1330; --ink:#e8ecff; --mute:#9aa4d6; --line:#202955;
+    --blue:#5b7cff; --blue-ink:#050816; --glow:#8f78ff; --pop:#ff8cc4;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#070a1c; --panel:#0e1330; --ink:#e8ecff; --mute:#9aa4d6; --line:#202955;
+  --blue:#5b7cff; --blue-ink:#050816; --glow:#8f78ff; --pop:#ff8cc4;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 var(--body)}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+header.top{display:flex;justify-content:space-between;align-items:center;padding:22px 0}
+header.top b{font:800 22px var(--display);letter-spacing:-.02em}
+nav a{margin-left:20px;text-decoration:none;color:var(--mute);font-size:15px}
+nav a:hover{color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding:48px 0 80px}
+h1{font:800 clamp(72px,15vw,168px)/.82 var(--display);letter-spacing:-.055em;margin:0 0 26px;cursor:default}
+h1 span{display:inline-block;transition:transform .25s cubic-bezier(.3,1.8,.5,1)}
+h1 span:hover{transform:translateY(-12px) rotate(-6deg);color:var(--blue)}
+.lede{font-size:20px;max-width:30em;color:var(--mute);margin:0 0 30px}
+.btn{display:inline-block;background:var(--blue);color:var(--blue-ink);font:800 17px var(--display);
+  padding:15px 28px;border-radius:12px;text-decoration:none;border:0;cursor:pointer;
+  transition:transform .15s}
+.btn:hover{transform:translateY(-3px) rotate(-1deg)}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line);margin-left:10px}
+.explorer{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  box-shadow:0 0 0 6px color-mix(in srgb,var(--glow) 10%,transparent)}
+.explorer .bar{padding:14px 18px;font:800 15px var(--display);border-bottom:1px solid var(--line)}
+.ex-body{display:grid;grid-template-columns:150px 1fr;min-height:310px}
+.ex-list{padding:12px 8px;border-right:1px solid var(--line);overflow:auto;max-height:340px}
+.ex-list small{display:block;margin:12px 8px 4px;color:var(--mute);font-size:12px}
+.ex-list small:first-child{margin-top:0}
+.ex-list button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--ink);
+  font:400 15px var(--body);padding:5px 8px;border-radius:7px;cursor:pointer}
+.ex-list button::before{content:"# ";color:var(--mute)}
+.ex-list button:hover{background:color-mix(in srgb,var(--blue) 14%,transparent)}
+.ex-list button[aria-pressed="true"]{background:var(--blue);color:var(--blue-ink)}
+.ex-list button[aria-pressed="true"]::before{color:inherit}
+.ex-view{padding:22px}
+.ex-view h3{font:800 26px var(--display);margin:0 0 8px;letter-spacing:-.02em}
+.ex-view p{margin:0;color:var(--mute)}
+.ex-view .try{margin-top:14px;color:var(--ink);font-size:15px}
+section{padding:64px 0;border-top:1px solid var(--line)}
+h2.s{font:800 clamp(32px,5vw,48px)/1.05 var(--display);letter-spacing:-.03em;margin:0 0 12px}
+.sub{color:var(--mute);max-width:34em;margin:0 0 32px}
+.choices{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.choices button{font:800 17px var(--display);background:var(--panel);color:var(--ink);border:2px solid var(--line);
+  border-radius:14px;padding:14px 22px;cursor:pointer;transition:transform .15s,border-color .15s}
+.choices button:hover{transform:translateY(-3px);border-color:var(--blue)}
+.choices button[aria-pressed="true"]{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.result{background:var(--panel);border-radius:16px;padding:22px 24px;max-width:640px;min-height:120px}
+.result h3{font:800 22px var(--display);margin:0 0 6px}
+.result p{margin:0 0 12px;color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding:0;margin:0;list-style:none}
+.chips li{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:15px}
+.chips li::before{content:"# ";color:var(--pop)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.card{background:var(--panel);border-radius:14px;padding:22px;transition:transform .2s}
+.card:hover{transform:translateY(-4px) rotate(-.6deg)}
+.card h3{font:800 20px var(--display);margin:0 0 6px}
+.card p{margin:0;color:var(--mute);font-size:16px}
+.rules{max-width:720px}
+details{border-bottom:1px solid var(--line);padding:2px 0}
+summary{cursor:pointer;list-style:none;font:800 18px var(--display);padding:14px 0;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--blue);font-size:24px;line-height:1;transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{margin:0 0 16px;color:var(--mute)}
+.agree{margin-top:26px}
+.agree-msg{display:none;margin-top:16px;font:800 20px var(--display)}
+.agree-msg.on{display:block}
+.agree-msg a{color:var(--blue)}
+.perks{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 4px;padding:0;list-style:none}
+.perks li{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 18px;font-size:16px;
+  transition:transform .15s,background .15s}
+.perks li:hover{transform:translateY(-3px) rotate(-2deg);background:var(--blue);color:var(--blue-ink)}
+.join{text-align:left}
+.join .invite{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+code{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px;font-size:16px}
+#pop{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);
+  background:var(--ink);color:var(--bg);padding:11px 20px;border-radius:999px;font:800 16px var(--display);
+  opacity:0;pointer-events:none;transition:all .25s}
+#pop.on{opacity:1;transform:translate(-50%,0)}
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:15px}
+.play{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
+.tile{background:var(--panel);border-radius:18px;padding:24px}
+.tile.wide{grid-column:1/-1}
+.tile h3{font:800 22px var(--display);margin:0 0 4px}
+.tile p.d{margin:0 0 16px;color:var(--mute);font-size:16px}
+.btn.sm{padding:11px 20px;font-size:15px}
+.sw{display:flex;gap:10px;flex-wrap:wrap}
+.sw button{width:44px;height:44px;border-radius:50%;border:3px solid var(--bg);cursor:pointer;box-shadow:0 0 0 2px var(--line);transition:transform .15s;color:var(--ink);font-size:18px}
+.sw button:hover{transform:scale(1.15)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink)}
+.big{font:800 clamp(30px,6vw,46px)/1.1 var(--display);letter-spacing:-.03em;margin:4px 0 16px;min-height:52px}
+.tile input[type=date],.say input{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:10px;padding:10px 12px}
+.chat{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px;height:190px;overflow:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.msg{max-width:85%;padding:8px 12px;border-radius:12px;font-size:15px;background:var(--panel)}
+.msg.me{align-self:flex-end;background:var(--blue);color:var(--blue-ink)}
+.msg b{display:block;font:800 12px var(--display);color:var(--mute)}
+.say{display:flex;gap:8px}.say input{flex:1;min-width:0}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.quick button{font:400 14px var(--body);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.quick button:hover{border-color:var(--blue)}
+.cf{position:fixed;top:-20px;width:10px;height:14px;z-index:50;pointer-events:none;border-radius:2px}
+.vault{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;max-width:520px;margin:0 0 16px}
+.vault ul{list-style:none;margin:0;padding:0;filter:blur(7px);transition:filter .4s;user-select:none}
+.vault.open ul{filter:none}
+.vault li{padding:3px 0}
+.vault li::before{content:"# ";color:var(--mute)}
+.vault .lock{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:800 20px var(--display);pointer-events:none;transition:opacity .3s}
+.vault.open .lock{opacity:0}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;padding:0;list-style:none}
+.facts li{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:15px}
+.facts .tag{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:18px}
+.games button{text-align:left;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-left:8px solid var(--blue);border-radius:12px;padding:16px;font:800 17px var(--display);cursor:pointer;transition:transform .15s}
+.games button small{display:block;font:400 13px var(--body);color:var(--mute);margin-top:2px}
+.games button:hover{transform:translateY(-3px)}
+.games button[aria-pressed="true"]{background:var(--blue);color:var(--blue-ink);border-color:var(--blue)}
+.games button[aria-pressed="true"] small{color:inherit}
+.gout{font:800 20px var(--display);min-height:30px}
+.icon{width:104px;height:104px;border-radius:24%;display:block;margin:0 0 22px;box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--line);transition:transform .3s}
+.icon:hover{transform:rotate(-6deg) scale(1.05)}
+.hdr-icon{width:34px;height:34px;border-radius:24%;vertical-align:middle;margin-right:10px}
+.soon{display:inline-block;border:2px dashed var(--line);border-radius:12px;padding:9px 16px;color:var(--mute);font-size:15px}
+.lk{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg)}
+.live{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:16px 20px;margin:0 0 22px}
+.live .dot{width:14px;height:14px;border-radius:50%;background:var(--mute);flex:none}
+.live.on{border-color:#ff4d6d}
+.live.on .dot{background:#ff4d6d;animation:pulse 1.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,77,109,.6)}100%{box-shadow:0 0 0 12px rgba(255,77,109,0)}}
+.live b{font:800 18px var(--display)}
+.live .lk{margin:0}
+.events{list-style:none;margin:0;padding:0;max-width:640px}
+.events li{border-bottom:1px solid var(--line)}
+.events button{width:100%;text-align:left;background:none;border:0;color:var(--ink);font:800 18px var(--display);padding:16px 0;cursor:pointer;display:flex;justify-content:space-between}
+.events button::after{content:"+";color:var(--blue);font-size:24px;line-height:1}
+.events button[aria-expanded="true"]::after{content:"–"}
+.events p{margin:0 0 16px;color:var(--mute)}
+#jump{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:30}
+#jump>button{font:800 15px var(--display);background:var(--ink);color:var(--bg);border:0;border-radius:999px;padding:12px 20px;cursor:pointer}
+#jumpList{display:none;position:absolute;right:0;bottom:54px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:8px;min-width:170px}
+#jumpList.on{display:block}
+#jumpList a{display:block;padding:8px 12px;border-radius:8px;text-decoration:none;font-size:16px}
+#jumpList a:hover{background:var(--bg)}
+@media (prefers-reduced-motion:reduce){.live.on .dot{animation:none}}
+.track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 14px;scrollbar-width:thin}
+.item{flex:0 0 220px;scroll-snap-align:start;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:0 0 16px;display:flex;flex-direction:column;overflow:hidden;transition:transform .2s}
+.item:hover{transform:translateY(-4px)}
+.item .ph{height:130px;display:flex;align-items:center;justify-content:center;font-size:56px;background:color-mix(in srgb,var(--blue) 18%,var(--panel))}
+.item h3{font:800 17px/1.2 var(--display);margin:14px 16px 4px}
+.item small{color:var(--mute);margin:0 16px 12px;font-size:14px}
+.item .btn{margin:auto 16px 0;text-align:center}
+.car{display:flex;gap:8px;margin:0 0 12px}
+.gamecard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;max-width:720px;margin:0 0 36px}
+.gamecard h3{font:800 26px var(--display);margin:0 0 6px;letter-spacing:-.02em}
+.gamecard p{color:var(--mute);margin:0 0 16px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.gal button{border:0;padding:0;background:var(--panel);border-radius:14px;overflow:hidden;cursor:pointer;text-align:left;color:var(--ink);transition:transform .2s}
+.gal button:hover{transform:scale(1.03)}
+.gal img{display:block;width:100%;aspect-ratio:1;object-fit:cover}
+.gal span{display:block;padding:8px 12px;font-size:14px;color:var(--mute)}
+.empty{background:var(--panel);border:2px dashed var(--line);border-radius:16px;padding:28px;color:var(--mute);max-width:640px}
+#lb{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:60;padding:20px}
+#lb.on{display:flex}
+#lb img{max-width:100%;max-height:100%;border-radius:12px}
+@media (max-width:820px){
+  .hero{grid-template-columns:1fr;gap:36px;padding-bottom:56px}
+  nav a:nth-child(n+3){display:none}
+  .btn.ghost{margin:12px 0 0}
+  .ex-body{grid-template-columns:130px 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <b><img class="hdr-icon" id="hdrIcon" alt="" width="34" height="34">azraq</b>
+    <nav><a href="#streams">Streams</a><a href="#links">Links</a><a href="#games">Games</a><a href="#vibe">Find your corner</a><a href="#play">Ask</a><a href="#rules">Rules</a><a href="#boosters">Boosters</a><a href="#join">Join</a></nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <img class="icon" id="heroIcon" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCADQANADASIAAhEBAxEB/8QAHAAAAgMBAQEBAAAAAAAAAAAABAUDBgcCAQgA/8QAQBAAAgEDAgQEAgkDAwIFBQAAAQIDAAQRBSEGEjFBEyJRYQdxFCMyQoGRobHBFVLRJDNiFnKSouHw8SY0Q1PC/8QAGgEAAwEBAQEAAAAAAAAAAAAAAgMEBQEABv/EACwRAAICAQQBAwMDBQEAAAAAAAECAAMRBBIhMUETIlEFMnFhobEUM4GR8FL/2gAMAwEAAhEDEQA/ANG+k26wSTQOj8oycMMVlmr3KXeqzzKgjWRs8o7UsimcR+RiAdiM13zGTBbc191p9IKCTnM+UOY3DW8lrEvKnPEftAnLexFSXtw19ctJ4axgnHKvQbUNaWsiASPGeU9CQcUdaRNMXAA29KM7VOYPU/W0XMQFye3SjpIuRQp2H70wXSr62gV2tZVU9yhoaeMt1O9T+oGPBnCDnmQQ2iOEHmLdQBRP0WNUXqM1PZWUr+ZDvTCDTpHk5XBOKS9oB7nu4uVD4IVfsg9fWpI0ztIPL+1WW04XvZlBjgZV9X2zRcnCN9gHkU+wYVOdVWOMxoosIyFMqDwYUZ6YrqG3XmBJUY/Onl5otzD5Z4nQDpkUGlr4cp5uijOa6LQRwYplI4MXyweGjFTlzvnHSll7HyRrgkkbU8bz8zYwPU0JND4mQMMBuN+lNrfB5i4vhgHhEy7dNh2HpQF4fKUDEj3HajZpm5SGyp6UpuJQJTVdYJOTOqMmcyZNmEH3WqR05yc7DlGB+FRsx8JQR1bp7VPzNyqqoSSMZPemmdIgF/hiBsQBtSqZBzco29T6U71DT7q2hS4ubaWOKQZjZkIDfjSmRnwAq4Y+Y5FNrYY4jAuINIhyyohPv7VePh7p30kx3N1PYQ20T4eOaXlZwOu381T7eOSRSyuBnqOlWDhTh2biK7eCOQQw2455JCObc9AB70rVkemctgfMYgywGMxz8TOGtPtVN/pqukt2RyrGV8IDGSR3yeu21ZFes8EvIGzjr6V9UR6Hp0umraT2UTwqoXzDdsd/UV888bx2C8SX0OnW8ttBHJyeG/UEbH3Az2qH6bqfUBq5JHmU2VlTuPRlVlk5uXI8/fHpV54C4Ri4jttRmldMKnhx4fDI/UNjuNiPxqnG3wp5QdjvmirVprGVZ7Sd4Zo3DAqcYxuK0rVd0IQ4MWCAY60+KKTmMrEfI4p5w9pQ1TXLa3hVvCJy5P8AaOpqv6ddCNwWXIzV20TUDbslzZHlkHXHp6H2NL1DOqnb3JSdre7qaPqNjYx6C1tcxoIYVPhIWwQcbb+tVDhieOwmn541lt3XEikenQihtX1ae8CmVvrDudth7UEk4+jEAEN33rKp07Csqx7jLL9zAoMYmkR8R206FY1lGdgRjP61V5LCJrtslirNsP8AJpZpMrKQTkD1qwq895dQiMc+QI1AXFK9L0Cds61rW/dJtH02S7k8GFdvXsvvV90rSbexjXCh5e7kftXWj6elhaKgA8Q7u3qaYZrKvvNhwOpq6bSisbm7nuBX6vMntvXapkZNTSyRvEkqlXUMp7Gqrr/D6rG8toNurR+3tVvIA3FQzAnzLvjt60ddjIciKtpWwYYTGL3JY78qD9KAnUMGSMjbqc7mtC4p0FXRruzjyv34wOh9RVAuGSMnC1v6e0WrlZg3UmtsGC3IURoJQcuO25JpHIyrOUTucFz2+VMbhmnlUI3LjpS02riQ+ICozucbVo1jA5MWox3CIrYPCcdVJ61ofAEOkzQi0uLWN79csDIvNzL7Z6YppwNo0MWhxvd2Nt4knmDEczMp6Zz0p61kltZn6BHb286rhHZMhfn3rH1etFmax895mhRpmUiw/wCp+1HS4L7TmsJY1FqQFwOwBB2/KkWp8D6NdWsyW9ultO+4lQZKn0we3tVSvfiFqVnqZiZbeZUco6Docd1YUI/xCv7Jo5Qkc1u7lmU7EZ7Zoa9Fq05Q489w31FLHDLKVxFpd1o2pz2lwCpjbAcAgOOxFFcGcQT6FqcslpEkpeMoyykgeudvlRfGGuXHE8lvLMscaqCsSRnIXffP6UPwLpwuuJrCO6hDL4vM2+zgDO/5Vts27Tn1xzjmSAgN7DL1q99xfa6G93JgNIokJtlBMK+46dDVG4W0/TNS1dpda1IRXTSCRROAY7hc5YFieprWeK9etdEsZYLmQNcXEbeGmcbEYz7CsEvr6GZwuFEadGNRaAG2tsDbnyI232OB38za9WvuGLS2Fsq6cjxKRERCJPDJGOg6nFYHr4gjuJvobyNbBhyPIACw9cCo5NQdZnCtlVPKvucV1faiX0eKyxEqI3OSRuW7fvVem0/9ODtYnMFmZiMiO0hhijwHJLDffoaa6dEIkEonCqevvXtrwxqahvpFhcZxkADO/wCFEW/D+ojyyWF0vcEIcU5rUIxukrAniTJfnmCKvMnqd6JU8wKKM8/SitN0O5TzSW06kDuho6PRrlsMYJSfaM1K1tYPBghfgSGyj+sDM4wPxrQOCLYsxuXHMAeVc+uNz+X71WLPQbsxj/TTZJ/sNaFw3Abazt4SvKQhZgfUt/gVla64FMKZbo6ybASI5Vg3TscGuq5jwsrL/d5hXYccxXvjNY82hO0wB03rwOCCK5JwKilLL513x1HqK93PE4kxbOK5JrlHV1DKcg17Xp7MglOJPLsT69G9vnVJ4v4aEqyXunx+YbywgfqP8VdbgYBYDmHdfWogwIB5sqfsv/Bp9NrVNuWItrWwbWmETRAP5gQfapyheFYgebvmtC4s4XW65rmxjC3HV4R0k919/as+aR7MsrArLzebI+z+Fb9WoF65XuY19LVnBlh0TiS7012+lNJNHyBEjJ5VXHTApLxBrN3qsssssjrH08BSeXH+aHmvokJVgTIdg53qu6i9z4hJZnU9gcUdOmTfvxgwfUdhtJ4kF20cZYnG2cHPTfalEl0XkMYPNGTnFTzDxGwQ3Xod96GmhZG5gozjbB6VojiEFA7k0ZKpI8cgwGBx6VM9zLaxG6inmt5MEowOD6bHtSyNpRhWBIzkLXl99IvRyk8qjA36ACvNyJ0LzPdQ1XUtfvBLdTyXMyoIwSRso6Cl08Etu3LLgc23WmOmWkFjcCaYeM69FOwoPUW8UMdyBnO+QtAo2jGMRm7LYHUTsximkJBLjpULkghp236j2qZGyWKk8+d3P8UDez80gV/MPUnvSGbaMyhRkz63eeGCMyTOkaDqzEAD8aWS8Z6LA3Kt3HIf+J2/Osxu7G5ueU391cXUpGfO+QvtihobSBWUMjc/fepq/p9ZGWbMi9f/AMzYrLjDT5scjxn5SCndrr9o+MBvwINYTFYRgDlLZpvbacyrzJcFMAZ+dBb9Op+Z1dU48/tNyg1W2Zdub8RU9jMPGTHR1OD+JrGYmv7UgrcyhT9khzg1bNH1i6S0tZGcvJFKebP30P8Ag5/OoLtBsGVOZVVqyT7po9zJygOu7LuR6jvXUn1iK8ZHMN1Pr7UE0quiyr5kccy/j1FRW1x4Uxt5D5DujVmhOJeXAPPmMTKCgYfZ6EdxXsUmSUJycZB9RS+4n+jS87nEbbSex7N8uxoeS6a2mwwxjdf/AH6GuivPU41oXuHyk2b84BMLHcf2mh7fUOWcxStlSfK1EyuLm054/MCOnr7VVp5OVyPSmVoHyDE3Wmsgr1LixyPagJua1cyKOaFvtL6UFo2pc5EErZP3Sf2ptIQAebdD60BUocGNVxauRI1KmPK+eI9upWkOv8L2urnxkkMU+Mc4AIb5+tOeQxSFofmU7Ee1espI8SBuVj1U9D8/eiR2rO5DicZQ4wwmUaxwlqVmj5t/pMY6PDv+Y61TrpbiMlH5uUbYOxU19BfTUV+S4Bif36H8aivtNsNRT/V2sE4PdkBP59a06vqbJ/cXMkOkU/YZ81zRyjKAZQtknFDyISeRSSAK33UeCNInjIihlh9on/g5qvTfDrTuYhL2eLfOJIxV6fU6W7yIpqHWY68Evh5Vif4oLwpc+RyWXfBraJOBNOtk+t1aONe5ZV3/AFpVd8NcLWwJm1mZzjBEKAk/oaYNdU325P8AgwdrDuY9NNcxMxHNluo61zPL41p9VlWDAFfWtRI4OiZUhh1K4fpzM6oKqur6lpMN0Y7Ph+BSOkk08kh/IECiFpbgA4hggmUy0t2meWPnSLkRpPrGxnHYepNcXCQWWneKTbXU90jKUIJa3IbY59T+1MJzJe3zYijQgZKxrygigZ7QLMVYkuRk7bULISOI0NzzNXtRI8TTkgk7fIVEtq7tz4HmOKX3mofQkNsD5sdquvw80aHWdLa4uroqqvymND5vx9M0Vr+ipsPUykpdz7fMVrackLHlb5nYUTpzoVdJMYO3vWmW0dtp8As1ieaFs45hzZz1FR2HC+nRoxlgDEyMy7kYXOwI9qzjr1IO4fiUjRMejzKK6iOwkjZs4PMpqGG+eJUVgQ3YdMCrVxLwpyW09zYStyoDJ4B9h0U/xVJtLiW7uooJBuWCKp9SafS6WoWHMBqnrOGmn6DezQ6dCLpGMUg5gO4BOxFTXV3EziBnHOV8SB+0i9x8x6dqbPBEtgsJUckaAD2wKxWbWJUDR85IWTxYjndGzuR86ztPT/UMzDiaFhNQCnkTWop/p1o0Tn/URjYH7woW0ufpINlOcSJ/sue4/tNUGy4mu4rqC5kCgqfNjbnHyq6zwf1S8srjTyPo9ynOzd0Xufnn9a9ZpzTw3RgBy4yOfH5jXSLsxTm3k2DHbPY0NxDbeFKJUHkfr7Gu9VgZCGGfEUZ5u7gd/mO9GwuupaZyvjmI5W9jU4O0hxGbdwNR78SrLKUYMpIIq26Tei9tcn7Y2YVUGhk+kNDj6wEjFPdCt57eYNsYZEyTnvTbwpX9YjSsyvjxC9Qlls3Rl80Wds9vajbeVZ41ljOzdRXsyLLGVcZB60qQPpk2dzbOcH/ifWpgAwx5lhJRs+D+0aXEUc6FZVDD37Umura6scvaOzx9SvUj/NOQ4IyDkVG8ih1ViAW6e9eRivE7Yivz0fmJYNfUeW5TB/uWmMF9b3A+qlVvbO/5UPqGlQXJLgcr98bA0nbRCzERTFXXqrjBFP21OPiTbr6zgjIlidIn+0iH5qDUMlrasPNbwN84x/ik0dnqsG0dwrKOzHNFxNqAH1v0c/LNCUx00MW7u1xIruwskyw0q0k+Uag/tVf1C30MEtcaDbh/VoR/FWsu+PrAufahZuVgeYAj3piOR3/MGwE9HEofhcMFz4uiQxt054sj+aXXHDfBdwzOqXVs5+8rn+c1d7uztJ8h4oyfYUsn0Oxb7hHyarVtX5I/zJSbB8TL7PhvXOI5mvdMsmeBTy+I7BFY9wM9avnAnCWs6f4VzLdR2hWXMkRYsSo+6cbb1dNFsYtK0u00m2uXYxx4EmQfcn8691PU7TheyW4v58RSycpcjcsRkDA+Vct11lma0HB6jxUoAz0JDf8AHWi2UiRRzG5lY45YRkDt16V+4i4vtbO0tXs5fFnklH1QG/L3z6dqyvjjXtM1PVra40i28KZQeeTAHOfu7dPxpTaakN2mkLOTjJ9KbV9OQhWIOfIMB9Q/OOprsXxEtF8UXMMvOp8qRj9yTVb4b1BuJuPoLhlVQH8VkXoqqNv4qiXTl5kVJFCv97PStJ+D+mRw3GoXy+YALAjY/Fv4o7qK9LUzqOSMT1btYwVjNJ1icW+j3sp+5A7fkpr5xa955MZ3reeNrgQ8Kao56GEr+ZA/mvniKGS81TwLGJpXduREQZLGlfS8KjMY7U+5gJY9Jinv7mKCFTJI55VA6mt04c0waRpcVsXMkgHmY+vXA9qQcCcLJoNmst1yvqEg87dRGP7R/Jqzy3kMcixu+HboMVLrtT6zbE6EOisV+5u4HxBeCGFFUgS55lPpiheH72OadzCRyPlXUfckG5Hyx0pTxzDPb6bc38MoYJjn5tigJxt+dUfhXW/oet2qrJ9TJIquM7HJx/Nep03qUllinsZbvdNK1pSsi3cQ5WDFW9mBp5Y3C3FrHKu3MNx6HvQckKzC7gf72GHsSP8AIpZw9cmG4ltJDvkkfMdamI3p+IwH07P0P8yylhXD8rKQwyD60PbziTn9UYqakLUnGJRuzIIc27+CcmM/YPp7V1cAMuG+ye/oexFdSAMMGuXwykHcGi85g44xOYJi2Y5CPFXrjuOxFezIsmM9R0I6igJC+WVP9+EZT/mvof8A36VJb3guIBJGPmp6g+lEV8iAH8GSGVoyFlxg7Bx0Pz9DX5yK8imjuYsjBB2IP7Gg73x7ZC8CmaMdUz5h8vWiAycThbAz4kkzgZzS6S7h5uUyKG9DtQf9ctX2d/DPo1Dy3kE+RJC7p/cqhx+mSKetRHYkzWg/bDZhG+5UGl13BJubeZo29Dup/ChWSB2/0F74T/2c2f8Aynegbu+1OxyZ4EnjH302qhKz4MnZ/kRTr6XXCeupc6V9KmhhUEyzRsUGeqk9COlU/ivii/19WW8fnj25VxhF9cCobn4oa9qcclpfNAtrOpjaOOEDIPXJOTVR1aW4mPMjYRumOlXU8LvcZYSn08NgdQqWfwlURvkdt9xXi37RKFUcz9ydwKryR3XPzFTy5wSelN7KCSRkAH2jhTjOflXVuZjwMRpRQOZa7AtFytdlnk2PKCOXH4V9CcCWYsuGbMcnK8w8dh7tuP0xXzlpFnM1/a24YN4syxFR1GTivp1Ii2LcBo7WIBNjgvgdPYfvUv1J/aqQKVwxaAcWWza3pF1pVm6+PLyqzH7MY5gSSfw6dai4P4RsOGYCYMzXbjElxJ1Pso7Cn6eHDGFQKiL2AwBVd1/iq10+KQRyIzKN3J8i/M96zUNjj006jnZU9zR7qF/b2cXNO+PRR1P4VWLXjTRJdTniRwHTd2xnBHb3NZBxRxvc6jNJHZmQxtkPMdmYf8fQVU7TUX0u+guwoeMSKxT1wc4q5NCqrlzFeo7HI4mp/Erie01n6NHpc9x4agmUNlVY9vL3I33qlWs8kRWQA5RgwPy3oLXStrfyGGTmglxLA46NG24/fHzFR29+WgdHdQCMZ71pUolabF6im3N7jPpuLUU/qtrGxwbq151PqQQcfkaUcQFrHVYrqPYN5vxHWq/r17cKnCU9ihe4eJfDTOM7L/GauetWX9StFRGVXDAqSenqKxAoqKk9HMbZmxSB2OZHZ3ynVZFU+SeNZV+eKa+JVFkM+lajbrcdYjsR0Kk//NXBJlcHlbOKG2rGCOpym0nIPcla4KzKp6N0+ddFzQN7nwGdPtp5l+Yrq2uVuIElTowzS9vGYzfzifr0leWdPtR7keo7ild/cNYXsd5Dva3H2wP7v/UftTZ2yCDSoRLdW13pcnpzRn0B3GPkaYmB3/win5PH/GSXN19Gdb2381u/+6B+/wA6cQ3Ec8asjAqRkEVRtE1AwSS2F90J5TnsfX5GptOvm0vUnsrhvqGbyMe2elNeg9fH7iLS7B58z3j/AIbvLy1a80N+S6Qczw4BEw9vRv3rETxPqVrKVYR8ynBxlSDX07BMGGCaQa5wdoWqzvLf6dC7SnzSLlHDeuR60VOqKDa0ea0bnEwo8cXRj/1CtIOmGIb9xXK8bMhBje7gPpG235Zx+lX7iD4MWsyFtF1CWFx0iuRzr/4hv+hrK+KuCNe4dVpL6ycwD/8APD54/wASOn44qpdSrdYnPQSDeJFgXtugaULuOxpdHPc3E/jz4C4woAx+QrSLX4XaxDoFlcQRqb3DPPbmTzYyOXA6Zx1Ga03ijhqx1DguVr+yt4L2GzL86IoaN1XOAR2zRPql9pz/AKnQMZnz7qV0bmzjgTASPDyH37CukmMiqycpMYAUxb8oHt1oFhyqAARG3fGdu596acL6a+s6/Z2FtbMFdwHkC5ZE+85x0wKez4OTOBRjiOOBr5INfsWueTkS4jbmG+3MMkk9gPSt84g4lt9JBXyOwGWJYBV+ZoDh3hnTLOxu7W2tiUlQhrmQKZG5hjrjbasD4ysBpXFN3pK3xnghYKJJGzgYBwR0yOlQMyamznxOgNt9pxL/AMS/EjxI5BbyNc46pCcIvzNZ3fa1Nq8oa9kIUHyxLso/zWm6N8OdKv3tZra6Nxos9pzGWMhHMmQMH9dvbFA8X/C02EIuNCbx4ERnmFwwDIBvkHG+2aYl1SsFWCtWPce5mlxcIiERnl/mlvjGchXICL+lRXLgytvhewqOIByVDAfM4pj2ljiOVMCMJL8iCKHDNCmeUNvjucUyiOnyhWXUo0XG6vEwYfgKQmJts4YD0Oa9ijSSVUQeZiF/PauixxOFAZvOv6zp2hvwe2qQtc20dnz+Ubg8q8rYPX5VcNB1vSuJ38W1kkSTGRG3kYgd8ZrDfiFrMWsXWnC3BEcFqsIRuqkHH8UPwLrx0vii2MshW2lBtpCD0Vts/gcGp3pynPBi+xNy41u7cvHAoJuoz5n/AOOOnvXXDN/4/iRsdwqn8tv8Uj4jLSR210/2yDFJ/wB67GoOGbnw9URc7OCtEKQaPxJGc+rumgs+VIpPpE3gz3NmT/ttzL8jRvi0h1Cb6JrdvNnCSjkapa0zlYx36MsjPkdaSNeeBfwSucNE/hv7qeho4zHFV7iUshjmXo3lb9xR1Jk7T5g2OexPeM7IxX30mEHJHOMdx94fzS69uP6hpqTA5mtxhj6qehq0SD+raJYOpHPzhGPz2/xVZ1nTm0HUfDBLWs6kq2Ox+0v4dfxp9Dg4Q9iDYhyWHUbcMa0ZofAlP1sY2PqKuNvKlxEVO4IwRWNRTvZ3YdD5kbt3rQdL1RPAinB+rbBJ9KDVafB3L5h1WleDLTAxKlHOXQ4J9R2NdyRq6lWAIIwQehFQOwDxzA7Hyt8j0P5/vRNZxlwiq0hEN0WluFdiM4Jx+lUz4rcT6f8A0O60eBhc3VwvKfDkwsW+csR+351hEHF+rTWPg3t5LKAAFLtkhR2oEanNIpbwyQOpzWjVp0BDs2YvDDKgTq/D2mAzEgjbB/Srl8IeMLfh7Vbj+pKq2tynK0wUs6kbgD2J6/hVDvJZ/BR5eWNJNlXu3v8AKuIkBYI7BCdwc5Bp1vvO3xDUe2bNrfxbvVvriLTbdILcj6t5PM598dBWUXbvcTPcSPzPKxZiTkknc0QV8sJmJ8gwGQ5zQ5iBZ+gCk4+VH6KoMKIAMecM8X6xw9E9vY3ZjhZw3hMoZc9zv0zVq1P4lNeaO9vqmmQXQkGw8Z0yfU4NZYknPIWVc+gHQCnGhat/StQW6ns4rpQCPDmAK0rCnxzCZfMTSqssjOAAGJIUdqhccvbApnqd493qM9y8aRmVubkRAFUHsKXtG8uSiFsdcUDL8RqmeQsQwPT5U30qB7/V7OGLKl5VRGPYk0BFhbXlKjJPXG4xTjhB/D4h09ifKJlOPQ0aAjiA54Jn64QQ3BM2QyMeYd8+hoeGETsXZgozkkYGKm4lmZ9bu+Y9W7fIVzY3MalY5ovKdvMOtUblZsGK525E1vRdUfWuH5VfDSRBXDA55yoCsfbOx/GoLG58G+iYHdGBx+NJOCbiLT9UW0yfDnGVB/5DlP8A/P5UXcKYNSIO2QU/I0aLglZC4901ATg9KT8TnnslkH2o2BqWwm8Wygf1QVFqi+LYzqf7CRUSLtcQScwyxuvHtIpM/aUE/Oh9bXxtOlHUqOYfhS3hy457EpndGx+dMbgl4JFHUqR+lEU2PPZhHBUxl0i7gz5ozzr+/wC4p9xTYf1LRJlRQZkHixfMdvxGRVR+Hkx+mSxN0li/WtCs/NaQnvyCpdSTXduH5l1PuTBmHTEcwOevSnHD13lJbOQ7OCUz+tRcY2AsNYnjQYjWUSJ/2t/8kfhQtqxCJcJ9u3bze61q5FiZ+ZE428TTeF73+o6U0Mp+ti+rf+DTyBy8KseuN/n3rO9BvhYcRKOYCC5Az6b9/wA6vIvILeWWOaVEIbmAY42I/wA5rI1FRV+PPMsosyvM+I4HPPljuegp5aW8cIR7s88h6R9h86rcBIlXm+62/wAqMuL/AJrgsGJOdvaqKrFUZaVupJwIfrM30m9D9lUDHpUEUZeRQm5Ow+dCiZiTnuMb13pgluZfDhOZF3AzivFgz/meA2r+I3S4kQsjFhtupFRNcYheLq3QH2og3DFkW6jKXEZ5WJH20O36Up55YJgjAKWAOcdjTbH2eYCrmFKXUKoUqD3xgUXHEAVJJc0DHPISFG4J3z3o9CLZo2fzk7kDORQ1kGdYGScjGYqV5c4IyM4Fdo8azPIqqH/tXbHvRF0Ejnil5xgp0FLSjMzS8w+1gint7DxAHuhlzp0yWFpcgxvHOWCqjhn2O/Mo6V3pFrcRXdrqHhsLWO5RGfsGJzj8qHsbmexuY7i2kKTRnmDDff5Gi7Z2kjJc4Ynmz/6UCqGM8SQI212wLTXs0Vu/i27/AF0mcjBOF27elKZ7ZwsUk6OquuVZgcMPb1pvr7Pdyw38TMEuYh4qg7eIuzA/ofxpfNcyXKxJIzlYhyqrHPKvtTSQYtc4E7trt7ee1mLlvAYMD3xnOK0PXuV72C4j+xIVkGPRhWXvziQpnK1o0UhuOGNLm6lECE+6tivI2Wirlxgy46E/NpsY9CR+tFyrzIy+oxSbSTiCIb+W4X9QRTqQ4uI07MpP7UizhjJMSu8P5juZ4z6Z/I1YAM0msY/D1l19WYVYljA60V7e7M7iJuE822vRL0xIyH8zWl2H/wBqo/tLL+RNZ5aReFrrONsTK35gVoenkNHKB2lYfz/NRaw5IMu03kShfFW15TbXIH242jJ91PMP3NU6xmEV0Ob/AG5PKw9jWkfE2AScO+J3ilU/mCP5rMLULK6xk+Z0HKfQ9qu0TbqcGJ1K4aH6oHgW1mBPNC3hE+x3U/nVh16+F5a2F0p3lhKt/wBynf8AekyAahpUkLnEnLyH1DDof2oHR2udRWOyhAa4QyMIycFthzAe/l6U0qDgnxJlyQVE+c5DgBoyQR1J6V+hZvukDPU1LJDIqbghDt64qOO3KyAFjjuRWOVOZ9ACIUYyiGQSc6jc1xakrK0gJU52xUkQKrzoeeInlORitS+FHw50/iyzvrrVprq2ZMLFDEOQ8pH+5kjcdqYwAw3xFlsdzPreaa6lCJmUgZGT0xvmtY4D+E//AFFoceqavfGJLmEG1WDDMoz1bO3TtVN4i4E1nQIb+8EIOkq5SO5d1VpF5sAqp3yfTFaL8GuMtJ0vRG0nV78wlX8aF5SQgBAyue24Jx3zRuXK8dxZI8TMeNNC/wCm9fu9MW5S58AgeIoxnIBwR2IzSZJWZy7Nv1zWo/F7jHRuIIIrPSbZXeKYu12UALbYwvfB67+lZn9HdDyMuSehrqhjOg8cyWWSWUIpYs2OYipolLEA5I9O+a6WFlZGYrnlxtTLTwkagjl5yc5qpEJPMWzYHEEETOGkbHl6jpX5pFBAjDE43ruaQRIycwZWOcDtUEBxMDQu4BwJ4DPcPMsrWpiUnlDc+PQ4xXttE7SLzKSTsMd6P0q0e8lSC2geaZjsiAkmtb4Q+HQihs9RvppEnBEotvDHlIOwYn9dq7Y6oAzGByeAJUNI+GGr6isE8gjtUlIyspw6r/dy/wAVduIeD4NA4LdLWWedoG5yzADAJ3O3arxFG9pP9IvJ1JII64Aqm8ecSWupaJfWunymRY2VZHGwbJ6D8qjS2yywY6nnC7fdEulHEUns0b/+YU61BvDvLU+5FVrR7gNaOc9Yc/lvT3W3wYHHfJq1xl5BjmQKMauWH/7KtFtp8l2V8N1UIwZs9SPaqdFNm5Vyer5/WrzZanbadazS3HMMb5Azt6UjU7gBt7jagpb3dQmDT7EStz2zmTbmdgR06U1toUhaTkfPiNz4PbYD+KWycRactg08txHHhObkY+b8B3qtQ6+V1xg7+ZQr8mfusN8VEK7LM5lZdK8Y5jr4gqG4VvR38mP/ABCsq4ktv6PrTRAcqRtyL7AgMv8AitX4murSeytYJLmFUuLiL7TgeUHmP6Cql8ULBbiK31W2KSxEeE5UgqTnKnI/FfyqrRWbCFPnMC5d3MQQSBJo7hP9m4Hm/wCLUH4g0fi2wvM8sDzLIT2H3X/Q5ofSrhVJtJiTbzDmhc9x/kdD7/OjNVtWvtOaFiPFTdHPQn/BGxrTI8HzM5TseYNFN/p8MAe2MdR71+tYd+YhG3BwTvQUcw5M1MHzis4PnBM3CsZafdppWr214ltDJ4Lh/CmXmQkeorU7L4337XNqj6ZZxwAgSBC2WXPRcnC/rVD0jg/XdV0+3u7bTppbGeQRpNkYyTy+uQM96R6hYvpWsTWUzIzQymJmU5GQcZBrzgHnxAwrHHmaH8TeMbDiuayk06ye3eLmaSSVvM7bYGBtt69apVvKphbPRtzgVBbxiKaR5TkK+FHqTRSOzsQSAPQU+tMDAgdSMQkcr4PXv3FMYZA4j5eoHeoAGZt2Yin/AAZp9rrGsx2NzcNahgw8QJzAHG2fYnvRBQk4TmOfh5og1nXo4phDKkY8VoZTgSqDuoxV24l+H2maZoWr30U8kEqczwxkjl5dsL6nr1oVOCZ+HtEu9YGo+HfWvNypHsMZx9rrkiobfjW01Ph6fTeI4GlmjjPgTgZbm7Z9Pn+dKcs7Bqzx5gZ+ZlP0bMjKD+OKltLdmfGMmmUgUsWXGajjuBG5CpuKI0qpyYW8ma98GuH5beOfV8gFlaBEI6nYk57dhWn6ejoZWmkLMT0LZwKxj4f8drpH+m1GWQ2ARuRFUEo2c/rv+dda18R7u5u3fT/9LH2AOWI9zUltD2WH4nQwUA+Y0+JXEt1BxE1razkwQqFZAMDnI3+dU17n/wCn7qXIzPcouPkCTSO91BriR5JC7O5yWffJ+deSSoptLbmztzyDOwZj0/LFXIgRQoiWG45MdWN4w05FJKkgj5jNXfUpRLp9jIDnmQH9BWV3t+FnIGAB5QK2L4fWtrrPDlhNdL4zRoV8POBkHGTXbnVMMfEWayxGPMX22japPbi4trRpI8ZB5gMj29aF4j1u40+2ktdQsJYHljwpLdfetR09JYwFwscCDlSNTnAHvWVfGvV3MsGmS26q8f1yTK+SwIx07dKkS822bSIz0BjMDluoNW4amlhlHiWvn2G+PSq3xXrCtrAa0lKukKxswOMHG9VzTdbexN3HjyzxNGy9j6Gk91cFiXY5ZiTjNUbwOZ1KSDzNH4B/pN/rQGu3StEgyqM3227Z9vWtL13inQ3s7nTVktTZonhyys3LEnoFx9oj22BHWvl/xmeZdmYk7KvU/Km41H6U0Nlc2jRux5ULnyqO2Fxv880rC2tlj+IxkZRxHup8QWizfQNPvJpLbxOdWYKo58YJBx5c+gpRr+oajbxLNJGJ7d9hN4xkUH0PofY0mtUj1KYWZSCC4Y4jlzyKT6N6Z9aYTrfcN+IszwOWTw2QMJEkOeh7Hy9fwp/qsQf5nPTVSB5lIhilYQgI31j4UkYDHOOvzppb8mnX1xBqVqJnUNFy+Ljkf+7K9cH8KXPqFy9vHbvIWgjcyKh6Bj1I+dex3RDAtHGw9xWajKPMtIJn0pwfrKcG8C2dnqMgv9UMRng06FQXRclt2GdvvZPTtWbfE36XrItdci0X6DpsoEdu0SDlfJJySBuxOaqGhTf1LUYLG2UxTzt4au0gRckd2Pat+tuIeG9F0nRdG13XLW6ltUDB7dMpGyDbmK5GxJx6kdKoJQDK85khDK36zANRM1rdeDdQyRSKAxSRSpGRnJBqP6dkkjGR6d6N481C11DifUbuwuLi5t5ZCY5rg+eTbdj098e2KrcTYYgjPpQvcQ3EoVARkx3DduwDOSV7Ad6sfBvE0/DuuR6haxI7BWjaJs4ZT1G34UkutMnsZooNSt5rSWSMOhcEbEZG3pXMELwyOJmC4Gzf4puGIweos7TNrsvihpmpR3NtxHpivHI+R4Azge+TnI9RWfajdQPfTmz5xbF28IP9oLnbPviq9GYFH1azE/3ZG9TmUBeYBiB611MJnEArJ55pVPlPl9q/Rs58xJz3qGOaRmAKbnoB3pnDbyQXEY1aO5tLdsgv4JzkDsDjO+K99xzmd6E4hLzTJFGC0jeVQBuT2FdPO1pO8VzEyTISrKw3B9KHNzaw28/ieKLwMpgKbLjfOT1z0xQcHjahOxLkk+Z3bf8AE13dg4Hc5jPJ6jRrr6Qp8NcgfpQJnaKYFzhlOQfX2qaS5tII1h8ZcLsAD1PqaU31xC4IUA+9MsYAZJ5nEGfEmnuxJOzOTyg5x61fuB+NJtKs7sm68J35Vih8PKADqfY1k/jfWYQZGcD3plFBNHjxyID6ODkfMdqnrs3k5GYdlYx8TVhxnqC3hRbtsTYAYNuCc9PyoPim8bUbODnt3vL5iyB2DMVGxG4+R2+dUiES20tnI0scsTSjDIxOPz+dPo+KVtw1tbxNNIXV1I7FTn9sirfZtPGDJDWVIK8yl3kksNxJFKOV42KkHYg+lBT3PKuSck9Kn4ivkvtVubtFVBM5fkBzg0mkc53BJ9TWTbZtJE0UXIBMlklbmDcxz12p+NWE8WnpM8jNaczK3LksT2/MVWY1aV9vxNa38LOBLjV5Y5J08C3B5nlIy/L2Az0zRaZmJJ8Qb9qgZ7hXDnC2kX/CFwBLOzysrSTNFyypIPshUGT3O2+cn8BbT4T67fSczw3DR58rTkQ5HyJJFfROjaNYaNbmHTraOBTjmYbs+O7N1NMQBQi0ITtGfzFszN+k/9k=" alt="azraq server icon" width="104" height="104">
+      <h1 id="logo" aria-label="azraq"></h1>
+      <p class="lede">Welcome to azraq! A friendly gaming and streaming community focused on Roblox, Fortnite, Minecraft and more. Join us for gaming sessions, live stream alerts and hanging out.</p>
+      <ul class="facts" aria-label="About the server"><li class="tag">Server tag: aeon</li><li>Est. Dec 2024</li><li>Gaming</li><li>Roblox</li><li>Streaming</li><li>Fortnite</li><li>Community</li></ul>
+      <a class="btn" href="https://discord.gg/7UDHtfpKz6">Join the server</a>
+      <a class="btn ghost" href="#vibe">Find your corner</a>
+    </div>
+    <aside class="explorer" aria-label="Server channel explorer">
+      <div class="bar">Peek inside azraq – tap a channel</div>
+      <div class="ex-body">
+        <div class="ex-list" id="exList"></div>
+        <div class="ex-view" aria-live="polite" id="exView"></div>
+      </div>
+    </aside>
+  </div>
+
+  <section id="games">
+    <h2 class="s">What we play</h2>
+    <p class="sub">Roblox, Fortnite and Minecraft are the big three, with plenty of room for more. Tap a game.</p>
+    <div class="games" id="gamesGrid"></div>
+    <div class="gout" id="gout" aria-live="polite">Tap a game to see how to find players.</div>
+  </section>
+
+  <section id="streams">
+    <h2 class="s">Hang out with the streamers</h2>
+    <p class="sub">azraq is where the fun keeps going after the stream ends. Chat with the people you watch, squad up and share your clips.</p>
+    <div class="live" id="live"><span class="dot"></span><b id="liveTxt">Not live right now</b><span class="lk" id="liveBtns"></span></div>
+    <div class="choices" id="wchoices"></div>
+    <div class="result" id="wresult" aria-live="polite"><p>What do you want to do here? Tap one.</p></div>
+    <div class="grid" style="margin-top:22px">
+      <div class="card"><h3>Stream alerts</h3><p>Get notified when a live stream starts or a new video drops.</p></div>
+      <div class="card"><h3>Squad finder</h3><p>Find teammates and jump into game nights.</p></div>
+      <div class="card"><h3>Community hub</h3><p>Share memes, talk games, or hang out in voice channels.</p></div>
+      <div class="card"><h3>Welcoming vibe</h3><p>A safe and friendly space for all members.</p></div>
+    </div>
+  </section>
+
+  <section id="events">
+    <h2 class="s">What’s on</h2>
+    <p class="sub">Things we host. Tap one to read more, and watch #events for the times.</p>
+    <ul class="events" id="evList"></ul>
+  </section>
+
+  <section id="vibe">
+    <h2 class="s">What’s your vibe?</h2>
+    <p class="sub">Pick one and we’ll point you to the channels you’ll probably like most.</p>
+    <div class="choices" id="choices"></div>
+    <div class="result" id="result" aria-live="polite"><p>Tap a vibe above to see where you’d fit in.</p></div>
+  </section>
+
+  <section id="about">
+    <h2 class="s">Your first five minutes</h2>
+    <p class="sub">New here? This is all it takes to feel at home.</p>
+    <div class="grid">
+      <div class="card"><h3>Say hi</h3><p>Drop a hello in #intro and tell us what you play or make.</p></div>
+      <div class="card"><h3>Pick your look</h3><p>Grab game, color and self roles so everyone knows your style.</p></div>
+      <div class="card"><h3>Add your birthday</h3><p>We’ll celebrate with you in #birthdays.</p></div>
+      <div class="card"><h3>Join the fun</h3><p>Count in #counting, share clips, or squad up for a game.</p></div>
+    </div>
+  </section>
+
+  <section id="rules">
+    <h2 class="s">House rules</h2>
+    <p class="sub">Nine simple ones. Tap any to read it. Short version: be kind, keep it in English.</p>
+    <div class="rules" id="rules-list">
+      <details><summary>Don’t disrespect others</summary><p>No discrimination, insults, harassment or hate speech. azraq is a toxic-free space.</p></details>
+      <details><summary>Use content warnings</summary><p>Add CW/TW and spoiler tags for triggering topics. Staff may remove anything harmful.</p></details>
+      <details><summary>English only</summary><p>Keep chats in English so staff can moderate properly.</p></details>
+      <details><summary>No inappropriate or NSFW content</summary><p>No nudity, gore or explicit stuff in chat, avatars, statuses or profile banners.</p></details>
+      <details><summary>No advertising or self-promotion</summary><p>No DM ads, server or stream links, art commissions, or selling game accounts.</p></details>
+      <details><summary>No spamming or mass pings</summary><p>Don’t flood text, images or emojis, and don’t mass ping members or staff.</p></details>
+      <details><summary>No threats, slurs or political debates</summary><p>Heated talk about politics and controversial topics isn’t allowed.</p></details>
+      <details><summary>No toxicity</summary><p>Friendly banter is fine. If someone asks you to stop, stop.</p></details>
+      <details><summary>Keep personal info private</summary><p>No real names, addresses, phone numbers, emails, passwords or private socials, yours or anyone else’s.</p></details>
+    </div>
+    <div class="agree">
+      <button class="btn" id="agreeBtn" type="button">I’ve read the rules</button>
+      <div class="agree-msg" id="agreeMsg">Thanks, you’re all set! <a href="https://discord.gg/7UDHtfpKz6">Come join us</a>, then hit #verify.</div>
+    </div>
+  </section>
+
+  <section id="play">
+    <h2 class="s">Ask the helper</h2>
+    <p class="sub">Not sure where to start? Ask away.</p>
+    <div class="play">
+      <div class="tile wide">
+        <h3>Chat with the azraq helper</h3>
+        <p class="d">A little demo helper, not the real bot. Ask it anything about the server.</p>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="say"><input id="chatIn" type="text" placeholder="Type a message…" aria-label="Message"><button class="btn sm" id="chatBtn" type="button">Send</button></div>
+        <div class="quick" id="quick"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="boosters">
+    <h2 class="s">Boost the server</h2>
+    <p class="sub">These channels are hidden from everyone else. They only show up for people who boost the server. azraq is at 5 boosts and counting.</p>
+    <div class="vault" id="vault">
+      <ul><li>boosters-tickets</li><li>boosters-chat</li><li>booster-media</li><li>self-promo</li><li>booster-giveaways</li><li>booster-suggestions</li><li>Boosters VC</li><li>Boosters VC 2</li></ul>
+      <div class="lock">🔒 Boosters only</div>
+    </div>
+    <button class="btn sm" id="vaultBtn" type="button" style="margin-bottom:22px">Peek inside</button>
+    <ul class="perks">
+      <li>Booster chat</li><li>Booster media</li><li>Self-promo</li><li>Giveaways</li>
+      <li>Suggestions forum</li><li>Two voice channels</li><li>Private tickets</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2 class="s">Questions?</h2>
+    <p class="sub">The quick answers.</p>
+    <div class="rules">
+      <details><summary>Can I wear the server tag?</summary><p>Yes! Pick the aeon tag in your Discord profile settings and it shows next to your name.</p></details>
+      <details><summary>How do I get in?</summary><p>Join with the invite, then press the button in #verify to unlock the rest of the server.</p></details>
+      <details><summary>How do I get roles?</summary><p>Game roles, color roles and self roles each have their own channel in the Self section.</p></details>
+      <details><summary>Can I share my stream or art link?</summary><p>Not in chat, DMs or voice, since advertising is against the rules. Show your work in #creations instead.</p></details>
+      <details><summary>How do I become a booster?</summary><p>Boost the server from the server menu in Discord and the booster channels unlock for you.</p></details>
+      <details><summary>Someone is breaking the rules. What now?</summary><p>Message a staff member in the server and they’ll take a look.</p></details>
+    </div>
+  </section>
+
+  <section id="staff">
+    <h2 class="s">Want to help out?</h2>
+    <p class="sub">Staff applications live in #staff-app inside the server. Check the requirements first and see if you’re ready.</p>
+    <a class="btn" href="https://claude.ai/artifact/S412ZiMMAjNhd4dJncmguy">See the staff requirements</a>
+  </section>
+
+  <section id="roblox">
+    <h2 class="s">Roblox</h2>
+    <p class="sub">Play our game and browse the outfits.</p>
+    <div class="gamecard">
+      <h3>Azraq’s Avatars</h3>
+      <p>Find cute, trendy and matching outfit ideas in our Roblox game. It’s still in development, so new outfits and features keep coming. Join the group and like the game to stay updated.</p>
+      <a class="btn" href="https://www.roblox.com/games/138602850200038/" target="_blank" rel="noopener noreferrer">Play on Roblox</a>
+      <a class="btn ghost" href="https://www.roblox.com/communities/34570718/Azraq#!/about" target="_blank" rel="noopener noreferrer">Join the group</a>
+    </div>
+    <h3 style="font:800 24px var(--display);margin:0 0 12px">Merch and outfits</h3>
+    <div class="car"><button class="btn sm" id="mPrev" type="button" aria-label="Previous items">←</button><button class="btn sm" id="mNext" type="button" aria-label="Next items">→</button></div>
+    <div class="track" id="merch"></div>
+  </section>
+
+  <section id="gallery">
+    <h2 class="s">Community gallery</h2>
+    <p class="sub">Clips, fan art and outfits from the community.</p>
+    <div class="choices" id="gFilters"></div>
+    <div class="gal" id="gal"></div>
+    <div class="empty" id="gEmpty">Nothing here yet. Share your clips, fan art and outfits in #media and #creations, and our favorites will show up here.</div>
+  </section>
+
+  <section id="links">
+    <h2 class="s">Official links</h2>
+    <p class="sub">Find the streamers and the official group everywhere else.</p>
+    <div class="grid" id="linkGrid"></div>
+  </section>
+
+  <section id="join" class="join">
+    <h2 class="s">Ready? Come hang out.</h2>
+    <p class="sub">The door’s open and there’s room for you.</p>
+    <a class="btn" href="https://discord.gg/7UDHtfpKz6">Join azraq on Discord</a>
+    <div class="invite"><code id="inv">discord.gg/7UDHtfpKz6</code><button class="btn ghost" id="copyBtn" type="button" style="margin:0">Copy invite</button></div>
+  </section>
+
+  <footer>azraq · made with love by the community</footer>
+</div>
+<div id="lb" role="dialog" aria-label="Image viewer"><img alt=""></div>
+<div id="jump"><button id="jumpBtn" type="button" aria-expanded="false">Menu</button><div id="jumpList"></div></div>
+<div id="pop" role="status"></div>
+<script>
+var INVITE="https://discord.gg/7UDHtfpKz6";
+var logo=document.getElementById("logo");
+"azraq".split("").forEach(function(c){var s=document.createElement("span");s.textContent=c;logo.appendChild(s)});
+
+var CH={
+ "Welcome":{welcome:"Start here. A quick hello and how things work.",rules:"The nine house rules, so everyone has a good time.",info:"Everything about the server in one place.",verify:"Press the button once to unlock the rest of azraq."},
+ "Important":{announcements:"News and updates from the team.",streams:"Who’s live right now.",content:"New videos and posts from the community.",events:"Game nights and server events."},
+ "Self":{intro:"Tell us who you are, what you play, what you love.",
+  "visual-diary":"Photos from your day, little moments welcome.",creations:"Art, edits, builds. Show off what you made.",setups:"Your desk, your console, your cozy corner."},
+ "General":{general:"The main hangout. Say anything (nicely).",commands:"Run bot commands here to keep chat tidy.",counting:"Count up together. Don’t break the streak!",media:"Memes, pictures and random finds.",clips:"Your best gaming moments."}
+};
+var list=document.getElementById("exList"),view=document.getElementById("exView"),btns=[];
+Object.keys(CH).forEach(function(cat){
+  var h=document.createElement("small");h.textContent=cat;list.appendChild(h);
+  Object.keys(CH[cat]).forEach(function(n){
+    var b=document.createElement("button");b.type="button";b.textContent=n;b.setAttribute("aria-pressed","false");
+    b.onclick=function(){show(b,n,CH[cat][n])};list.appendChild(b);btns.push(b);
+  });
+});
+function show(b,n,t){
+  btns.forEach(function(x){x.setAttribute("aria-pressed","false")});
+  b.setAttribute("aria-pressed","true");
+  view.innerHTML="";
+  var h=document.createElement("h3");h.textContent="# "+n;
+  var p=document.createElement("p");p.textContent=t;
+  var a=document.createElement("p");a.className="try";a.textContent="Join the server to see it live.";
+  view.appendChild(h);view.appendChild(p);view.appendChild(a);
+}
+show(btns[0],"welcome",CH.Welcome.welcome);
+
+var VIBES={
+ "Gamer":{t:"You’re a gamer. Welcome to the squad.",d:"Grab your game roles, find people to play with, and share your best plays.",c:["game-roles","minecraft","fortnite","roblox","clips"]},
+ "Creator":{t:"You’re a creator. We want to see your work.",d:"Post your art, edits and photos, and show off your setup.",c:["creations","visual-diary","setups","content","media"]},
+ "Chill":{t:"You’re here to chill. Perfect.",d:"Pull up a seat, chat, join the counting streak and pick your colors.",c:["general","counting","color-roles","birthdays","intro"]},
+ "Booster":{t:"You’re a booster. Thank you!",d:"You’ve got a corner of your own with chat, giveaways and voice channels.",c:["boosters-chat","booster-giveaways","booster-suggestions","boosters-vc"]}
+};
+var ch=document.getElementById("choices"),res=document.getElementById("result"),vb=[];
+Object.keys(VIBES).forEach(function(k){
+  var b=document.createElement("button");b.type="button";b.textContent=k;b.setAttribute("aria-pressed","false");
+  b.onclick=function(){
+    vb.forEach(function(x){x.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");
+    var v=VIBES[k];res.innerHTML="";
+    var h=document.createElement("h3");h.textContent=v.t;
+    var p=document.createElement("p");p.textContent=v.d;
+    var u=document.createElement("ul");u.className="chips";
+    v.c.forEach(function(n){var l=document.createElement("li");l.textContent=n;u.appendChild(l)});
+    res.appendChild(h);res.appendChild(p);res.appendChild(u);
+  };
+  ch.appendChild(b);vb.push(b);
+});
+
+var pop=document.getElementById("pop"),tm;
+function toast(m){pop.textContent=m;pop.classList.add("on");clearTimeout(tm);tm=setTimeout(function(){pop.classList.remove("on")},2200)}
+document.getElementById("agreeBtn").onclick=function(){
+  document.querySelectorAll("#rules-list details").forEach(function(d){d.open=true});
+  document.getElementById("agreeMsg").classList.add("on");toast("Nice, welcome to azraq!");
+};
+document.getElementById("copyBtn").onclick=function(){
+  var done=function(){toast("Invite copied!");var cb=document.getElementById("copyBtn");cb.textContent="Copied ✓";setTimeout(function(){cb.textContent="Copy invite"},2000)};
+  try{navigator.clipboard.writeText(INVITE).then(done,function(){toast("Press and hold the invite to copy")})}
+  catch(e){toast("Press and hold the invite to copy")}
+};
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  var cs=["#5b7cff","#ff7ab8","#ffd166","#2fd17a","#8f78ff"];
+  for(var i=0;i<50;i++){
+    var e=document.createElement("div");e.className="cf";e.style.left=(Math.random()*100)+"vw";e.style.background=cs[i%5];
+    document.body.appendChild(e);
+    (function(e){var a=e.animate([{transform:"translateY(0) rotate(0deg)",opacity:1},{transform:"translateY("+(innerHeight+40)+"px) rotate("+Math.round(Math.random()*720)+"deg)",opacity:.9}],{duration:1400+Math.random()*1200,easing:"cubic-bezier(.2,.6,.4,1)"});a.onfinish=function(){e.remove()}})(e);
+  }
+}
+document.getElementById("agreeBtn").addEventListener("click",confetti);
+var lc=0;logo.onclick=function(){lc++;if(lc%5===0){confetti();toast("You found the secret!")}};
+
+var chat=document.getElementById("chat"),cin=document.getElementById("chatIn");
+function say(t,me){
+  var m=document.createElement("div");m.className="msg"+(me?" me":"");
+  if(!me){var n=document.createElement("b");n.textContent="azraq helper";m.appendChild(n)}
+  m.appendChild(document.createTextNode(t));chat.appendChild(m);chat.scrollTop=chat.scrollHeight;
+}
+var R=[[/\b(hi|hello|hey|yo|sup)\b/,"Hey there! Welcome to azraq. Ask me about rules, verifying, roles, boosting or games."],
+ [/rule/,"Be kind, keep it in English, no NSFW, no spam, no ads. The full list is in the rules section above."],
+ [/verif|unlock|join/,"Head to #verify and press the button. That unlocks the rest of the server."],
+ [/role|color/,"Grab game, color and self roles in #game-roles, #color-roles and #self-roles."],
+ [/boost|perk/,"Boosters get chat, media, giveaways, a suggestions forum, two voice channels and tickets. Those channels are only visible to people who boost the server."],
+ [/staff|mod|apply/,"Applications live in #staff-app. Read the requirements first."],
+ [/game|play|minecraft|fortnite|roblox/,"Check #game-roles, then ask in #general who’s up for Roblox, Fortnite, Minecraft, Rocket League, Fall Guys and more."],
+ [/birthday/,"Add yours in #birthdays and the server will celebrate with you."],
+ [/thank|thx/,"Anytime!"]];
+function ask(t){
+  t=t.trim();if(!t)return;say(t,true);var l=t.toLowerCase(),a="Not sure about that one! Try asking about rules, verify, roles, boosters, staff or games.";
+  for(var i=0;i<R.length;i++){if(R[i][0].test(l)){a=R[i][1];break}}
+  setTimeout(function(){say(a,false)},450);
+}
+say("Hi! I’m a demo helper. What do you want to know about azraq?",false);
+document.getElementById("chatBtn").onclick=function(){ask(cin.value);cin.value=""};
+cin.onkeydown=function(e){if(e.key==="Enter"){ask(cin.value);cin.value=""}};
+var qk=document.getElementById("quick");
+["hello","how do I verify?","tell me the rules","what do boosters get?","how do I get roles?","can I be staff?"].forEach(function(q){
+  var b=document.createElement("button");b.type="button";b.textContent=q;b.onclick=function(){ask(q)};qk.appendChild(b);
+});
+var vault=document.getElementById("vault"),vbtn=document.getElementById("vaultBtn");
+vbtn.onclick=function(){
+  var o=vault.classList.toggle("open");
+  vbtn.textContent=o?"Lock it again":"Peek inside";
+  if(o)toast("Only boosters see these for real");
+};
+var GL=[["Roblox",1],["Fortnite",1],["Minecraft",1],["Rocket League"],["Fall Guys"],["Lethal Company"],["Raft"],["VRChat"],["GTA V Legacy"],["Geometry Dash"],["osu!"],["Zenless Zone Zero"]];
+var gg=document.getElementById("gamesGrid"),go=document.getElementById("gout"),gb=[];
+GL.forEach(function(g){
+  var b=document.createElement("button");b.type="button";b.setAttribute("aria-pressed","false");
+  b.textContent=g[0];var s=document.createElement("small");s.textContent=g[1]?"One of our main games":"Also played here";b.appendChild(s);
+  b.onclick=function(){
+    gb.forEach(function(x){x.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");
+    go.textContent=g[0]+": grab your role in #game-roles, then ask in #general who’s up to play.";
+  };
+  gg.appendChild(b);gb.push(b);
+});
+document.getElementById("hdrIcon").src=document.getElementById("heroIcon").src;
+var WV=[["Watch the streams","Watch the streams","Follow #streams for live alerts, then chat with us while we play."],["Play with us","Play with us","Grab your game roles, then jump in the squad finder for game nights."],["Share clips","Share clips","Post your best moments in #clips and your art and edits in #creations."],["Just chat","Just chat","Hang out in #general or hop into a voice channel and say hi."]];
+var wc=document.getElementById("wchoices"),wr=document.getElementById("wresult"),wb=[];
+WV.forEach(function(w){
+  var b=document.createElement("button");b.type="button";b.textContent=w[0];b.setAttribute("aria-pressed","false");
+  b.onclick=function(){
+    wb.forEach(function(x){x.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");
+    wr.innerHTML="";var h=document.createElement("h3");h.textContent=w[1]+"!";var p=document.createElement("p");p.textContent=w[2];wr.appendChild(h);wr.appendChild(p);
+  };
+  wc.appendChild(b);wb.push(b);
+});
+var LINKS=[
+ {who:"Azul",items:[["Roblox profile","https://www.roblox.com/users/4565511888/profile"],["TikTok channel","https://www.tiktok.com/@.azu1l"]]},
+ {who:"Casper",items:[["Roblox profile","https://www.roblox.com/users/2353132708/profile"],["TikTok channel","https://www.tiktok.com/@itzcasperr"]]},
+ {who:"Mr. & Mrs. Blue",items:[["Joint TikTok channel","https://www.tiktok.com/@the2ofus15"]]},
+ {who:"Official Roblox group",items:[["Azraq! group page","https://www.roblox.com/communities/34570718/Azraq#!/about"]]},
+ {who:"Server invite",items:[["Join azraq on Discord","https://discord.gg/7UDHtfpKz6"]]}
+];
+var lg=document.getElementById("linkGrid");
+LINKS.forEach(function(g){
+  var c=document.createElement("div");c.className="card";
+  var h=document.createElement("h3");h.textContent=g.who;c.appendChild(h);
+  var d=document.createElement("div");d.className="lk";
+  g.items.forEach(function(i){
+    if(i[1]){var a=document.createElement("a");a.className="btn sm";a.href=i[1];a.target="_blank";a.rel="noopener noreferrer";a.textContent=i[0];d.appendChild(a)}
+    else{var s=document.createElement("span");s.className="soon";s.textContent=i[0]+": link coming soon";d.appendChild(s)}
+  });
+  c.appendChild(d);lg.appendChild(c);
+});
+var LIVE={on:false,who:"",url:""};
+(function(){
+  var box=document.getElementById("live"),txt=document.getElementById("liveTxt"),bt=document.getElementById("liveBtns");
+  function link(l,u){var a=document.createElement("a");a.className="btn sm";a.href=u;a.target="_blank";a.rel="noopener noreferrer";a.textContent=l;bt.appendChild(a)}
+  if(LIVE.on&&LIVE.url){box.classList.add("on");txt.textContent="Live now: "+LIVE.who;link("Watch live",LIVE.url)}
+  else{txt.textContent="Not live right now. Follow to catch the next stream.";link("Azul on TikTok","https://www.tiktok.com/@.azu1l");link("Casper on TikTok","https://www.tiktok.com/@itzcasperr");link("Joint TikTok","https://www.tiktok.com/@the2ofus15")}
+})();
+var EV=[["Fortnite custom games","Jump in for custom matches with the community."],["Roblox game night","Team up for a night of Roblox and hang out in voice chat."],["Community movie night","Watch something together and chat about it."]];
+var evl=document.getElementById("evList");
+EV.forEach(function(e){
+  var li=document.createElement("li"),b=document.createElement("button"),p=document.createElement("p");
+  b.type="button";b.setAttribute("aria-expanded","false");b.textContent=e[0];
+  p.textContent=e[1]+" Watch #events for the next time.";p.hidden=true;
+  b.onclick=function(){var o=p.hidden;p.hidden=!o;b.setAttribute("aria-expanded",o?"true":"false")};
+  li.appendChild(b);li.appendChild(p);evl.appendChild(li);
+});
+var JM=[["Top","#"],["Streams","#streams"],["What’s on","#events"],["Roblox","#roblox"],["Gallery","#gallery"],["Links","#links"],["Games","#games"],["Rules","#rules"],["Boosters","#boosters"],["Staff","#staff"],["Join","#join"]];
+var jl=document.getElementById("jumpList"),jb=document.getElementById("jumpBtn");
+JM.forEach(function(j){var a=document.createElement("a");a.href=j[1];a.textContent=j[0];a.onclick=function(){jl.classList.remove("on");jb.setAttribute("aria-expanded","false")};jl.appendChild(a)});
+jb.onclick=function(){var o=jl.classList.toggle("on");jb.setAttribute("aria-expanded",o?"true":"false")};
+var MERCH=[["black y2k long sleeve matching t-shirt","Shirt","https://www.roblox.com/catalog/129356290161459"],["pink y2k long sleeve matching t-shirt","Shirt","https://www.roblox.com/catalog/119533752673759"],["silly kitty","Shirt","https://www.roblox.com/catalog/111828374745304"],["matching light pink pjs","Pants","https://www.roblox.com/catalog/18352639377"],["matching light pink shirt /m","Shirt","https://www.roblox.com/catalog/18352620118"],["matching light pink shirt /f","Shirt","https://www.roblox.com/catalog/18352627851"]];
+var mt=document.getElementById("merch");
+MERCH.forEach(function(m){
+  var c=document.createElement("div");c.className="item";
+  var ph=document.createElement("div");ph.className="ph";ph.textContent=m[1]==="Pants"?"👖":"👕";ph.setAttribute("aria-hidden","true");
+  var h=document.createElement("h3");h.textContent=m[0];
+  var s=document.createElement("small");s.textContent=m[1];
+  var a=document.createElement("a");a.className="btn sm";a.href=m[2];a.target="_blank";a.rel="noopener noreferrer";a.textContent="View on Roblox";
+  c.appendChild(ph);c.appendChild(h);c.appendChild(s);c.appendChild(a);mt.appendChild(c);
+});
+document.getElementById("mPrev").onclick=function(){mt.scrollBy({left:-240,behavior:"smooth"})};
+document.getElementById("mNext").onclick=function(){mt.scrollBy({left:240,behavior:"smooth"})};
+
+var GALLERY=[];
+var gal=document.getElementById("gal"),gF=document.getElementById("gFilters"),gE=document.getElementById("gEmpty"),lb=document.getElementById("lb"),lbi=lb.querySelector("img"),gfb=[];
+function drawG(kind){
+  gal.innerHTML="";
+  GALLERY.filter(function(g){return !kind||g.kind===kind}).forEach(function(g){
+    var b=document.createElement("button");b.type="button";
+    var i=document.createElement("img");i.src=g.src;i.alt=g.title||"";i.loading="lazy";
+    var s=document.createElement("span");s.textContent=g.title||"";
+    b.appendChild(i);b.appendChild(s);
+    b.onclick=function(){if(g.url){window.open(g.url,"_blank","noopener")}else{lbi.src=g.src;lbi.alt=g.title||"";lb.classList.add("on")}};
+    gal.appendChild(b);
+  });
+}
+if(GALLERY.length){
+  gE.style.display="none";
+  [["All",""],["Clips","clip"],["Fan art","art"],["Outfits","outfit"]].forEach(function(k){
+    var b=document.createElement("button");b.type="button";b.textContent=k[0];b.setAttribute("aria-pressed",k[1]===""?"true":"false");
+    b.onclick=function(){gfb.forEach(function(x){x.setAttribute("aria-pressed","false")});b.setAttribute("aria-pressed","true");drawG(k[1])};
+    gF.appendChild(b);gfb.push(b);
+  });
+  drawG("");
+}
+lb.onclick=function(){lb.classList.remove("on")};
+document.addEventListener("keydown",function(e){if(e.key==="Escape")lb.classList.remove("on")});
+</script>
+</body>
+</html>
